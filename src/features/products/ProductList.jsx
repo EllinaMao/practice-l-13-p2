@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts, setCurrentPage, setSearch } from "./productsSlice";
 import { addToCart } from "../cart/cartSlice";
+import { useMemo } from "react";
 
 export const ProductList = () => {
   const dispatch = useDispatch();
@@ -18,9 +19,17 @@ export const ProductList = () => {
   }, [status, dispatch]);
 
   ///filter
-  const filteredItems = items.filter((item) =>
-    item.title.toLowerCase().includes((search || "").toLowerCase()),
+  const filteredItems = useMemo(
+    () =>
+      items.filter((item) =>
+        item.title.toLowerCase().includes((search || "").toLowerCase()),
+      ),
+    [items, search],
   );
+
+  const handleSearchChange = (e) => {
+    dispatch(setSearch(e.target.value));
+  }
 
   // --- PAGINATION LOGIC ---
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -42,7 +51,7 @@ export const ProductList = () => {
         type="text"
         placeholder="Search products..."
         value={search}
-        onChange={(e) => dispatch(setSearch(e.target.value))}
+        onChange={handleSearchChange}
       />
       {/* Product grid */}
       <div
