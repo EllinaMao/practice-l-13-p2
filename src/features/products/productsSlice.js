@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
- 
+
 // Асинхронный запрос для получения товаров
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
@@ -9,7 +9,7 @@ export const fetchProducts = createAsyncThunk(
     return response.data;
   }
 );
- 
+
 const productsSlice = createSlice({
   name: "products",
   initialState: {
@@ -18,12 +18,17 @@ const productsSlice = createSlice({
     error: null,
     currentPage: 1, // поле для хранения текущей страницы
     itemsPerPage: 9, // сколько товаров выводить
+    search: "", // поиск новых товаров
   },
   reducers: {
     // Экшен для смены страницы
     setCurrentPage: (state, action) => {
       state.currentPage = action.payload;
     },
+    setSearch: (state, action) => {
+      state.search = action.payload;
+      state.currentPage = 1; // Сброс на 1 стр
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -40,6 +45,6 @@ const productsSlice = createSlice({
       });
   },
 });
- 
-export const { setCurrentPage } = productsSlice.actions; // Экспортируем новый экшен
+
+export const { setCurrentPage, setSearch } = productsSlice.actions; // Экспортируем новый экшен
 export default productsSlice.reducer;

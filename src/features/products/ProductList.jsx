@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts, setCurrentPage } from "./productsSlice";
+import { fetchProducts, setCurrentPage, setSearch } from "./productsSlice";
 import { addToCart } from "../cart/cartSlice";
 
 export const ProductList = () => {
   const dispatch = useDispatch();
 
   // Get required data from Redux
-  const { items, status, currentPage, itemsPerPage } = useSelector(
+  const { items, status, currentPage, itemsPerPage, search } = useSelector(
     (state) => state.products,
   );
 
@@ -17,11 +17,18 @@ export const ProductList = () => {
     }
   }, [status, dispatch]);
 
+  ///filter
+  const filteredItems = items.filter((item) =>
+    item.title.toLowerCase().includes((search || "").toLowerCase())
+  );
+
+  
+
   // --- PAGINATION LOGIC ---
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(items.length / itemsPerPage);
+  const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
 
   const paginate = (pageNumber) => {
     dispatch(setCurrentPage(pageNumber));
@@ -33,6 +40,12 @@ export const ProductList = () => {
 
   return (
     <div>
+      <input
+        type="text"
+        placeholder="Search products..."
+        value={search}
+        onChange={(e) => dispatch(setSearch(e.target.value))}
+      />
       {/* Product grid */}
       <div
         style={{
