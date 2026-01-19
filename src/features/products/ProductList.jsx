@@ -19,10 +19,8 @@ export const ProductList = () => {
 
   ///filter
   const filteredItems = items.filter((item) =>
-    item.title.toLowerCase().includes((search || "").toLowerCase())
+    item.title.toLowerCase().includes((search || "").toLowerCase()),
   );
-
-  
 
   // --- PAGINATION LOGIC ---
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -54,31 +52,35 @@ export const ProductList = () => {
           gap: "20px",
         }}
       >
-        {currentItems.map((product) => (
-          <div
-            key={product.id}
-            style={{
-              border: "1px solid #ccc",
-              padding: "10px",
-              borderRadius: "8px",
-            }}
-          >
-            <img
-              src={product.image}
-              alt={product.title}
-              style={{ width: "100%", height: "150px", objectFit: "contain" }}
-            />
-            <h4 style={{ height: "40px", overflow: "hidden" }}>
-              {product.title}
-            </h4>
-            <p>
-              <strong>{product.price} $</strong>
-            </p>
-            <button onClick={() => dispatch(addToCart(product))}>
-              Add to cart
-            </button>
-          </div>
-        ))}
+        {currentItems.length > 0 ? (
+          currentItems.map((product) => (
+            <div
+              key={product.id}
+              style={{
+                border: "1px solid #ccc",
+                padding: "10px",
+                borderRadius: "8px",
+              }}
+            >
+              <img
+                src={product.image}
+                alt={product.title}
+                style={{ width: "100%", height: "150px", objectFit: "contain" }}
+              />
+              <h4 style={{ height: "40px", overflow: "hidden" }}>
+                {product.title}
+              </h4>
+              <p>
+                <strong>{product.price} $</strong>
+              </p>
+              <button onClick={() => dispatch(addToCart(product))}>
+                Add to cart
+              </button>
+            </div>
+          ))
+        ) : (
+          <p>No products found.</p>
+        )}
       </div>
 
       {/* Page navigation buttons */}
